@@ -146,6 +146,55 @@ html, body
             {
                 background-color: white;
                 padding:25px;
+
+                .box-action
+                {
+                    padding-bottom: 30px;
+                }
+
+                .table
+                {
+                    font-size: 16px;
+
+                    thead
+                    {
+                        th
+                        {
+                            th:last-child
+                            {
+                                text-align:center;                
+                            }         
+                        }
+                    }
+
+                    tr
+                    {
+                        td
+                        {
+                            text-align: left;
+
+                            &:last-child
+                            {
+                                text-align:right;
+                            }
+
+                            .actif
+                            {
+                                color : green;
+                            }
+
+                            .innactif
+                            {
+                                color: red;
+                            }
+                        }
+
+                        &:hover
+                        {
+                            background-color: #f1f1f1;
+                        }            
+                    }
+                }
             }
         }
     }

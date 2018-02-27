@@ -26,11 +26,11 @@ export var validationJoueur = {
 		let test = approve.value(a, {
 			required: {
 				required: true,
-				message: "Le prenom est requis"
+				message: "Le prénom est requis"
 			},
 			min: {
 				min:2,
-				message: 'Le prenom est trop court'
+				message: 'Le prénom est trop court'
 			}
 		});
 
@@ -91,3 +91,27 @@ export var validationJoueur = {
 		return formatReponse(test);
 	},
 };
+
+
+export var validationSaison = {
+	date_start:function(a){
+		let test = approve.value(a, {
+			required: {
+				required: true,
+				message: "La date de début est requise"
+			}
+		});
+
+		return formatReponse(test);
+	},
+	date_close:function(a){
+		let test = approve.value(a, {
+			required: {
+				required: true,
+				message: "La date de fin est requise"
+			}
+		});
+
+		return formatReponse(test);
+	}
+}

@@ -3,7 +3,9 @@
         <div class="container-page">
             <h1>Liste des joueurs</h1>
             <div class="box">
-                <router-link :to="{ name: 'JoueurForm'}" class="btn btn-success">Créer</router-link>
+                <div class="box-action">
+                    <router-link :to="{ name: 'JoueurForm'}" class="btn btn-success">Créer un joueur</router-link>
+                </div>                
                 <table class="table table_joueur">
                     <thead>
                         <th>Id</th>
@@ -15,7 +17,7 @@
                         <th></th>
                     </thead>
                     <tbody>
-                        <tr v-for="joueur in joueurs()">
+                        <tr v-for="joueur in joueurs">
                             <td>{{joueur.id}}</td>
                             <td>{{joueur.nom}}</td>
                             <td>{{joueur.prenom}}</td>
@@ -39,33 +41,33 @@
 
 
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapMutations } from 'vuex';
+import axios from 'axios'
 
 export default {
     name: 'HelloWorld',
     data () {
         return {
-
+            joueurs: []
         }
     },
     methods : {
-        ...mapGetters("joueur", [
-            "label",
-            "compteur",
-            "joueurs"
-        ]),
-        ...mapActions("joueur",[
-            "getAll"
-        ]),
-        ...mapMutations("joueur", [
-            "setCompteur"            
-        ]),
         ...mapMutations("app", [
             "clearFlashMessage"
-        ])
+        ]),
+        getAll : function() {
+            var that = this;
+            axios.get("http://127.0.0.1:5000/joueur")
+                .then(function (response) {
+                    that.joueurs = response.data;
+                })
+                .catch(function (error) {   
+                    console.log("erreur !"); 
+                }); 
+        }
     },
     created() {
-        //this.clearFlashMessage();
+        this.clearFlashMessage();
         this.getAll();
     },
 }
@@ -74,56 +76,4 @@ export default {
 
 
 <style scoped lang="less">
-.box
-{
-    background-color: white;
-    padding:25px;
-}
-
-.table
-{
-    font-size: 16px;
-
-    &.table_joueur
-    {
-        thead
-        {
-            th
-            {
-                th:last-child
-                {
-                    text-align:center;                
-                }         
-            }
-        }
-
-        tr
-        {
-            td
-            {
-                text-align: left;
-
-                &:last-child
-                {
-                    text-align:right;
-                }
-
-                .actif
-                {
-                    color : green;
-                }
-
-                .innactif
-                {
-                    color: red;
-                }
-            }
-
-            &:hover
-            {
-                background-color: #f1f1f1;
-            }            
-        }
-    }
-}
 </style>
