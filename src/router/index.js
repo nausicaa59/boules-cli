@@ -13,9 +13,14 @@ export default new Router({
       component: JoueursList
     },
     {
-      path: '/createJoueur',
+      path: '/joueur/create',
       name: 'JoueurForm',
       component: JoueurForm
-    }
+    },
+    {
+      path: '/joueur/edit/:id',
+      name: 'JoueurFormEdit',
+      component: JoueurForm
+    },
   ]
 })

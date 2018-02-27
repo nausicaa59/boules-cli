@@ -15,7 +15,7 @@ const state = {
 		prenom : "",
 		pseudo : "",
 		password : "",
-		actif : "",
+		actif : 1,
 		email : ""
   	},
   	errorJoueur : {
@@ -25,7 +25,7 @@ const state = {
 		pseudo : 	{ valide:false, erreurs:[] },
 		password : 	{ valide:false, erreurs:[] },
 		actif : 	{ valide:false, erreurs:[] },
-		email : 	{ valide:false, erreurs:[] }  		
+		email : 	{ valide:true, erreurs:[] }  		
   	}
 }
 

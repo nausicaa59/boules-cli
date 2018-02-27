@@ -3,6 +3,7 @@
         <div class="container-page">
             <h1>Liste des joueurs</h1>
             <div class="box">
+                <router-link :to="{ name: 'JoueurForm'}" class="btn btn-success">Créer</router-link>
                 <table class="table table_joueur">
                     <thead>
                         <th>Id</th>
@@ -25,7 +26,7 @@
                             <td>{{joueur.nbChallenge}}</td>
                             <td>{{joueur.lastParticipation}}</td>
                             <td>
-                                <router-link :to="{ name: 'JoueurForm' }" class="btn btn-secondary">Editer</router-link>
+                                <router-link :to="{ name: 'JoueurFormEdit', params:{id : joueur.id} }" class="btn btn-secondary">Editer</router-link>
                                 <a class="btn btn-danger" href="#" role="button">Supprimer</a>
                             </td>
                         </tr>
@@ -59,8 +60,12 @@ export default {
         ...mapMutations("joueur", [
             "setCompteur"            
         ]),
+        ...mapMutations("app", [
+            "clearFlashMessage"
+        ])
     },
     created() {
+        //this.clearFlashMessage();
         this.getAll();
     },
 }

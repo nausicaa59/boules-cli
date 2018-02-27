@@ -63,4 +63,13 @@ export const mutations = {
 	    state.errorJoueur.email.valide = test.valide;
 	    state.errorJoueur.email.erreurs = test.erreurs;
 	},
+	setErrorsArray: (state, vals) => {
+		console.log(vals);
+		for(var a in vals) {
+			if(state.errorJoueur[a] != undefined) {
+				state.errorJoueur[a].valide = false;
+				state.errorJoueur[a].erreurs = vals[a];
+			}
+		}
+	}
 }

@@ -33,14 +33,34 @@
             </ul>
         </div>
         <div id="app">
+            <div id="flashMessage" v-if="this.flashMessage().display">
+                <div class="alert" v-bind:class="classFlashMessage(flashMessage().type)">
+                    {{this.flashMessage().label}}
+                </div>
+            </div>
             <router-view/>
         </div>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
-    name: 'App'
+    name: 'App',
+    methods : {
+        ...mapGetters("app", [
+            "flashMessage"
+        ]),
+        classFlashMessage: function (type) {
+            return {
+                'alert-danger': (type == "error")   ? true : false,
+                'alert-success': (type == "success") ? true : false,
+                'alert-warning': (type == "warning") ? true : false,
+                'alert-info': (type == "info") ? true : false
+            }
+        }
+    },
 }
 </script>
 
@@ -94,6 +114,11 @@ html, body
         }
     }
 
+    #flashMessage
+    {
+        text-align: center;
+    }
+
     #app 
     {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -109,6 +134,7 @@ html, body
             margin-left: auto;
             margin-right: auto;
             padding-top: 40px;
+            padding-bottom: 80px;
             
             h1
             {

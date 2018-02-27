@@ -75,10 +75,16 @@ export var validationJoueur = {
 		return formatReponse(test);
 	},
 	email:function(a){
+		if(a == "") {
+			return {
+				valide : true,
+				erreurs : []				
+			};
+		}
+
 		let test = approve.value(a, {
-			required: {
-				min:4,
-				message: "Aucun auteur sélectionné"
+			email: {
+				message: "Le champs n'est pas un emai valide"
 			}
 		});
 

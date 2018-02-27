@@ -14,5 +14,15 @@ export default {
 	joueur_pseudo_errors 	: 	state => state.errorJoueur.pseudo,
 	joueur_password_errors 	: 	state => state.errorJoueur.password,
 	joueur_actif_errors		: 	state => state.errorJoueur.actif,
-	joueur_email_errors 	: 	state => state.errorJoueur.email
+	joueur_email_errors 	: 	state => state.errorJoueur.email,
+	joueur_all_valide 		: state => {
+		return (
+			state.errorJoueur.nom.valide
+			&& state.errorJoueur.nom.valide
+			&& state.errorJoueur.prenom.valide
+			&& state.errorJoueur.pseudo.valide
+			&& state.errorJoueur.password.valide
+			&& state.errorJoueur.email.valide
+		);
+	}
 }
