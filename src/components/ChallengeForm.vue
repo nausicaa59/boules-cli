@@ -3,20 +3,15 @@
         <div class="container-page">
             <h1>{{label}}</h1>
             <div class="box">
-                <div class="form-group" v-bind:class="classInError(erreurs().date_start.valide)">
-                    <label>Date de début :</label>
-                    <datepicker v-model="date_start" language="fr" input-class="form-control"></datepicker>
+                <div class="form-group" v-bind:class="classInError(erreurs().nom.valide)">
+                    <label>Nom du challenge :</label>
+                    <input type="text" v-model="nom" class="form-control">
                     <small class="form-text text-muted">{{erreurs().date_start.erreurs.join(" | ")}}</small>
                 </div>
-                <div class="form-group" v-bind:class="classInError(erreurs().date_close.valide)">
-                    <label>Date de fin :</label>
-                    <datepicker v-model="date_close" language="fr" input-class="form-control"></datepicker>
-                    <small class="form-text text-muted">{{erreurs().date_close.erreurs.join(" | ")}}</small>
-                </div>
-                <div class="form-group" v-bind:class="classInError(erreurs().nom.valide)">
-                    <label>Nom de la saison</label>
-                    <input v-model="nom" class="form-control">
-                    <small class="form-text text-muted">{{erreurs().nom.erreurs.join(" | ")}}</small>
+                <div class="form-group" v-bind:class="classInError(erreurs().date_start.valide)">
+                    <label>Date du challenge :</label>
+                    <datepicker v-model="date_start" language="fr" input-class="form-control"></datepicker>
+                    <small class="form-text text-muted">{{erreurs().date_start.erreurs.join(" | ")}}</small>
                 </div>
                 <div class="form-group">
                     <button class="btn" v-on:click="save()" v-bind:class="btInError(formErrors())" v-bind:disabled="!formErrors()">{{label_bt}}</button>
@@ -32,10 +27,9 @@ import { mapMutations } from 'vuex';
 import {validationSaison} from '../validation/validation';
 import axios from 'axios'
 import Datepicker from 'vuejs-datepicker';
-import moment from 'moment';
 
 export default {
-    name: 'saisonForm',
+    name: 'JoueurForm',
     components: {
         Datepicker
     },
@@ -44,8 +38,7 @@ export default {
             mode : "post",
             id : 0,
             date_start : "",
-            date_close : "",
-            nom : ""
+            nom : "",
         }
     },
     methods : {
@@ -57,8 +50,7 @@ export default {
         ]),
         getAll: function() {
             return {
-                date_start : moment(this.date_start).format('YYYY-MM-DD'),
-                date_close : moment(this.date_close).format('YYYY-MM-DD'),
+                date_start : this.date_start,
                 nom : this.nom            
             }      
         },
@@ -86,34 +78,37 @@ export default {
                 this.setFlashError(["Erreur service introuvable", true]);
             } 
         },
+        displaySuccess(msg) {
+            this.setFlashSuccess([msg, true])
+            this.$router.push({ name: 'JoueursList' });   
+        },
         save: function() {
-            if(this.mode == "post") {
+            console.log(this.getAll());
+            /*if(this.mode == "post") {
                 this.post();
             }
 
             if(this.mode == "put") {
                 this.put();
-            }
+            }*/
         },
         getById : function(id) {
-            var that = this;
+            /*var that = this;
             axios.get("http://127.0.0.1:5000/saison/" + id)
                 .then(function (response) {
                     that.id = response.data.id;
                     that.date_start = response.data.date_start;
                     that.date_close = response.data.date_close;
-                    that.nom = response.data.nom;
                 })
                 .catch(function (error) {
                     that.displayError(error);          
-                });  
+                });*/  
         },
         put: function(data) {
             var that = this;
             axios.put("http://127.0.0.1:5000/saison/" + this.id, this.getAll())
                 .then(function (response) {
-                    that.setFlashSuccess(["Saison bien éditée !", true]);
-                    that.$router.push({ name: 'SaisonsList' });
+                    that.displaySuccess("Saison éditée !");
                 })
                 .catch(function (error) {
                     that.displayError(error);          
@@ -123,8 +118,7 @@ export default {
             var that = this;
             axios.post("http://127.0.0.1:5000/saison", this.getAll())
                 .then(function (response) {
-                    that.setFlashSuccess(["Saison bien créer !", true]);
-                    that.$router.push({ name: 'SaisonsList' }); 
+                    that.displaySuccess("Saison créer !");
                 })
                 .catch(function (error) {
                     that.displayError(error);          
@@ -133,8 +127,7 @@ export default {
         erreurs : function() {
             return {
                 date_start    : validationSaison.date_start(this.date_start),
-                date_close    : validationSaison.date_close(this.date_close),
-                nom           : validationSaison.nom(this.nom)
+                nom    : validationSaison.date_close(this.nom)
             }
         },
         formErrors : function(){
@@ -151,17 +144,17 @@ export default {
     computed : {
     },
     created() {
-        this.setCurrentSection("saison");
+        this.setCurrentSection("Challenge");
         this.clearFlashMessage();
 
         if(this.$route.params.id == undefined) {
             this.mode = "post";
-            this.label = "Créer une saison";
+            this.label = "Créer un challenge";
             this.label_bt = "Créer";
         } else {
             this.mode = "put";
             this.getById(this.$route.params.id);
-            this.label = "Editer une saison";
+            this.label = "Editer un challenge";
             this.label_bt = "Editer";
         }
     }

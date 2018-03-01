@@ -113,5 +113,19 @@ export var validationSaison = {
 		});
 
 		return formatReponse(test);
-	}
+	},
+	nom:function(a){
+		let test = approve.value(a, {
+			required: {
+				required: true,
+				message: "Le nom de la saison est requis"
+			},
+			min: {
+				min:2,
+				message: 'Le nom de la saison est trop court'
+			}
+		});
+
+		return formatReponse(test);
+	},
 }

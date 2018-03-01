@@ -28,7 +28,7 @@
             <router-link :to="{ name: 'JoueursList' }" v-bind:class="isActiveSection('joueur')">
                 <i class="fa fa-user"></i> Joueurs
             </router-link>
-            <router-link :to="{ name: 'JoueursList' }" v-bind:class="isActiveSection('challenge')">
+            <router-link :to="{ name: 'ChallengesList' }" v-bind:class="isActiveSection('challenge')">
                 <i class="fa fa-file-excel-o"></i> Challenges
             </router-link>
             <router-link :to="{ name: 'SaisonsList' }" v-bind:class="isActiveSection('saison')">

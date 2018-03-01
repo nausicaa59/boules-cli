@@ -4,7 +4,8 @@ import JoueursList from '@/components/JoueursList';
 import JoueurForm from '@/components/JoueurForm';
 import SaisonForm from '@/components/SaisonForm';
 import SaisonsList from '@/components/SaisonsList';
-
+import ChallengesList from '@/components/ChallengesList';
+import ChallengeForm from '@/components/ChallengeForm';
 
 Vue.use(Router)
 
@@ -39,6 +40,16 @@ export default new Router({
       path: '/saison',
       name: 'SaisonsList',
       component: SaisonsList
+    },
+    {
+      path: '/challenge',
+      name: 'ChallengesList',
+      component: ChallengesList
+    },
+    {
+      path: '/challenge/create',
+      name: 'ChallengeForm',
+      component: ChallengeForm
     },
   ]
 })
