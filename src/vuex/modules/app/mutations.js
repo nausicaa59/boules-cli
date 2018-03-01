@@ -2,6 +2,9 @@ import {validationJoueur} from '../../../validation/validation';
 
 
 export const mutations = {
+	setCurrentSection: (state, vals) => {
+		state.currentSection 	= vals;
+	},
 	setFlashMessage: (state, vals) => {
 		state.flashMessage.type 	= vals.type;
 	    state.flashMessage.label 	= vals.label;
@@ -12,7 +15,7 @@ export const mutations = {
 	    state.flashMessage.type 	= "error";
 	    state.flashMessage.label 	= vals[0];
 	    state.flashMessage.display 	= true;
-	    state.flashMessage.compteur = vals[1] ? 1 : 0;
+	    state.flashMessage.compteur = vals[1] ? 0 : 1;
 	},
 	setFlashSuccess: (state, vals) => {
 		state.flashMessage.type 	= "success";

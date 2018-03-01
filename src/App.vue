@@ -2,6 +2,17 @@
     <div id="wrapper">
         <nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top" id="navBarre">
             <a class="navbar-brand" href="#">Pétanque porteloise</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <span id="flashMessage" v-if="this.flashMessage().display">
+                            <span v-bind:class="classFlashMessage(flashMessage().type)">
+                                {{this.flashMessage().label}}
+                            </span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
             <div class="collapse navbar-collapse justify-content-end">
                 <ul class="navbar-nav">
                     <li class="nav-item active">
@@ -14,30 +25,17 @@
         </nav>
 
         <div id="menu-verticale">
-            <ul>
-                <li class="actif">
-                    <router-link :to="{ name: 'JoueursList' }">
-                        <i class="fa fa-user"></i> Joueurs
-                    </router-link>
-                </li>
-                <li>
-                    <router-link :to="{ name: 'JoueursList' }">
-                        <i class="fa fa-file-excel-o"></i> Challenges
-                    </router-link>
-                </li>
-                <li>
-                    <router-link :to="{ name: 'JoueursList' }">
-                        <i class="fa fa-calendar"></i> Saisons
-                    </router-link>
-                </li>
-            </ul>
+            <router-link :to="{ name: 'JoueursList' }" v-bind:class="isActiveSection('joueur')">
+                <i class="fa fa-user"></i> Joueurs
+            </router-link>
+            <router-link :to="{ name: 'JoueursList' }" v-bind:class="isActiveSection('challenge')">
+                <i class="fa fa-file-excel-o"></i> Challenges
+            </router-link>
+            <router-link :to="{ name: 'SaisonsList' }" v-bind:class="isActiveSection('saison')">
+                <i class="fa fa-calendar"></i> Saisons
+            </router-link>
         </div>
         <div id="app">
-            <div id="flashMessage" v-if="this.flashMessage().display">
-                <div class="alert" v-bind:class="classFlashMessage(flashMessage().type)">
-                    {{this.flashMessage().label}}
-                </div>
-            </div>
             <router-view/>
         </div>
     </div>
@@ -50,7 +48,8 @@ export default {
     name: 'App',
     methods : {
         ...mapGetters("app", [
-            "flashMessage"
+            "flashMessage",
+            "currentSection"
         ]),
         classFlashMessage: function (type) {
             return {
@@ -59,6 +58,11 @@ export default {
                 'alert-warning': (type == "warning") ? true : false,
                 'alert-info': (type == "info") ? true : false
             }
+        },
+        isActiveSection: function (section) {
+            return {
+                'actif' : section == this.currentSection()
+            };
         }
     },
 }
@@ -81,7 +85,7 @@ html, body
         z-index: 1;
         background-color: white;
         color:black;
-        padding-left:330px;
+        padding-left:350px;
         padding-top:10px;
         padding-bottom: 10px;
         border-bottom: 2px solid #d1d1d1;
@@ -116,7 +120,7 @@ html, body
 
     #flashMessage
     {
-        text-align: center;
+
     }
 
     #app 
@@ -211,52 +215,35 @@ html, body
         padding-top: 85px;
         color:white;
 
-        ul
+        a
         {
-            list-style: none;
-            padding:0px;
-            margin: 0px;
+            padding: 20px 15px;
+            border-bottom:1px solid #3a475b;
+            cursor:pointer;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.39);
+            display:block;
+            text-decoration: none;
 
-            li
+            &:hover
             {
-                padding: 20px 15px;
-                border-bottom:1px solid #3a475b;
-                cursor:pointer;
-                font-size: 18px;
+                background-color: #3a475b; 
+            }
 
-                &:hover
+            i
+            {
+                padding-right: 8px;
+            }
+
+            &.actif
+            {
+                background-color: #3a475b; 
+                color: white;
+                text-decoration:none;                        
+
+                i
                 {
-                    background-color: #3a475b; 
-
-                    a
-                    {
-                        text-decoration: none;
-                    }
-                }
-
-                a
-                {
-                    color: rgba(255, 255, 255, 0.39);
-                    
-                    i
-                    {
-                        padding-right: 8px;
-                    }
-                }
-
-                &.actif
-                {
-                    background-color: #3a475b; 
-
-                    a
-                    {
-                        color: white;                        
-
-                        i
-                        {
-                            color:#428bca;
-                        }
-                    }
+                    color:#428bca;
                 }
             }
         }

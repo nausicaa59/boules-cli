@@ -6,6 +6,7 @@ import {mutations} from './mutations';
 
 
 const state = {
+	currentSection : "",
 	flashMessage : {
 		display: false,
 		type: "",

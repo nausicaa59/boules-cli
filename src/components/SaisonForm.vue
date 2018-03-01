@@ -13,6 +13,13 @@
                     <datepicker v-model="date_close" language="fr" input-class="form-control"></datepicker>
                     <small class="form-text text-muted">{{erreurs().date_close.erreurs.join(" | ")}}</small>
                 </div>
+                <div class="form-group" v-bind:class="classInError(erreurs().date_close.valide)">
+                    <label>Type de challenge</label>
+                    <select class="form-control">
+                        <option>Challenge Classique</option>
+                        <option>Challenge +60 ans</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <button class="btn" v-on:click="save()" v-bind:class="btInError(formErrors())" v-bind:disabled="!formErrors()">{{label_bt}}</button>
                 </div>
@@ -45,7 +52,8 @@ export default {
         ...mapMutations("app", [
             "setFlashError",
             "setFlashSuccess",
-            "clearFlashMessage"
+            "clearFlashMessage",
+            "setCurrentSection"
         ]),
         getAll: function() {
             return {
@@ -92,7 +100,7 @@ export default {
             }*/
         },
         getById : function(id) {
-            var that = this;
+            /*var that = this;
             axios.get("http://127.0.0.1:5000/saison/" + id)
                 .then(function (response) {
                     that.id = response.data.id;
@@ -101,7 +109,7 @@ export default {
                 })
                 .catch(function (error) {
                     that.displayError(error);          
-                });  
+                });*/  
         },
         put: function(data) {
             var that = this;
@@ -143,6 +151,7 @@ export default {
     computed : {
     },
     created() {
+        this.setCurrentSection("saison");
         this.clearFlashMessage();
 
         if(this.$route.params.id == undefined) {

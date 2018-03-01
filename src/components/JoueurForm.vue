@@ -61,7 +61,8 @@ export default {
         ...mapMutations("app", [
             "setFlashError",
             "setFlashSuccess",
-            "clearFlashMessage"
+            "clearFlashMessage",
+            "setCurrentSection"
         ]),
         getAll: function() {
             return {
@@ -178,6 +179,7 @@ export default {
         }
     },
     created() {
+        this.setCurrentSection("joueur");
         this.clearFlashMessage();
 
         if(this.$route.params.id == undefined) {

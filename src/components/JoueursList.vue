@@ -29,7 +29,8 @@
                             <td>{{joueur.lastParticipation}}</td>
                             <td>
                                 <router-link :to="{ name: 'JoueurFormEdit', params:{id : joueur.id} }" class="btn btn-secondary">Editer</router-link>
-                                <a class="btn btn-danger" href="#" role="button">Supprimer</a>
+                                <span class="btn btn-danger" href="#" role="button" v-on:click="delet(joueur.id)" v-if="joueur.nbChallenge <= 0">Supprimer</span>
+                                <span class="btn btn-warning" href="#" role="button" v-on:click="delet(joueur.id)" v-if="joueur.nbChallenge > 0">Déactivé</span>
                             </td>
                         </tr>
                     </tbody>
@@ -48,12 +49,15 @@ export default {
     name: 'HelloWorld',
     data () {
         return {
-            joueurs: []
+            joueurs: [],
         }
     },
     methods : {
         ...mapMutations("app", [
-            "clearFlashMessage"
+            "clearFlashMessage",
+            "setFlashError",
+            "setFlashSuccess",
+            "setCurrentSection"
         ]),
         getAll : function() {
             var that = this;
@@ -64,9 +68,35 @@ export default {
                 .catch(function (error) {   
                     console.log("erreur !"); 
                 }); 
+        },
+        delet : function(id) {
+            if(!confirm("Voulez-vous vraiment supprimer le joueur ?")) {
+                return true;
+            }
+
+            var that = this;
+            axios.delete("http://127.0.0.1:5000/joueur/" + id)
+                .then(function (response) {
+                    that.setFlashSuccess(["Joueur bien supprimer !", false]);
+                    that.removeElement(id);
+                })
+                .catch(function (error) {
+                    var msg = (error.request.status == 404) ? error.response.data[0] : "erreur serveur";
+                    that.setFlashError([msg], false);                   
+                }); 
+        },
+        removeElement : function(id) {
+            let i = this.joueurs.findIndex(function(e) {
+                return (e.id == id);
+            })
+
+            if(i != -1) {
+                this.joueurs.splice(i,1);
+            }
         }
     },
     created() {
+        this.setCurrentSection("joueur");
         this.clearFlashMessage();
         this.getAll();
     },
