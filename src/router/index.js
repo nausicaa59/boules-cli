@@ -47,7 +47,12 @@ export default new Router({
       component: ChallengesList
     },
     {
-      path: '/challenge/create',
+      path: '/challenge/:id_saison',
+      name: 'ChallengesBySaisonList',
+      component: ChallengesList
+    },
+    {
+      path: '/challenge/create/:id_saison',
       name: 'ChallengeForm',
       component: ChallengeForm
     },

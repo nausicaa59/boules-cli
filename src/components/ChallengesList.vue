@@ -4,17 +4,18 @@
             <h1>Liste des challenges</h1>
             <div class="box">
                 <div class="form-group">
-                    <select class="form-control" id="liste_saison">
+                    <select class="form-control" id="liste_saison" v-model="currentSaison" v-on:change="changeSaison()">
                         <option v-for="saison in saisons" v-bind:value="saison.id">
                             {{ saison.nom }}
                         </option>                        
                     </select>
-                    <router-link :to="{ name: 'ChallengeForm'}" class="btn btn-success">Créer un challenge</router-link>
+                    <router-link :to="{ name: 'ChallengeForm', params:{id_saison : currentSaison} }" class="btn btn-success">Créer un challenge</router-link>
                 </div>             
                 <table class="table">
                     <thead>
                         <th>Id</th>
                         <th>Nom</th>
+                        <th>Saison</th>
                         <th>Date Debut</th>
                         <th>Nb participant</th>
                         <th></th>
@@ -23,6 +24,7 @@
                         <tr v-for="challenge in challenges">
                             <td>{{challenge.id}}</td>
                             <td>{{challenge.nom}}</td>
+                            <td>{{challenge.saison.nom}}</td>
                             <td>{{challenge.date_start}}</td>
                             <td>{{challenge.nb_joueur}}</td>
                             <td>
@@ -49,6 +51,7 @@ export default {
     name: 'ChallengesList',
     data () {
         return {
+            currentSaison : 0,
             saisons : [],
             challenges : []
         }
@@ -60,15 +63,26 @@ export default {
             "setFlashSuccess",
             "setCurrentSection"
         ]),
-        getAll : function() {
-            /*var that = this;
-            axios.get("http://127.0.0.1:5000/saison")
+        changeSaison: function() {
+            var that = this;
+            axios.get("http://127.0.0.1:5000/saison/" + this.currentSaison + "/challenges")
                 .then(function (response) {
-                    that.joueurs = response.data;
+                    that.challenges = response.data;
                 })
                 .catch(function (error) {   
                     console.log("erreur !"); 
-                });*/ 
+                });   
+        },
+        initialisation: function() {
+            var that = this;
+            axios.get("http://127.0.0.1:5000/saison")
+                .then(function (response) {
+                    that.saisons = response.data;
+                    that.currentSaison = that.saisons[0].id;
+                })
+                .catch(function (error) {   
+                    console.log("erreur !"); 
+                });
         },
         delet : function(id) {
 
@@ -89,25 +103,18 @@ export default {
     created() {
         this.setCurrentSection("challenge");
         this.clearFlashMessage();
-
-        this.saisons = [
-            {id : 1, nom : "Saison 2017 - Normal"},
-            {id : 2, nom : "Saison 2018 - Normal"},
-            {id : 3, nom : "Saison 2019 - Normal"},
-            {id : 4, nom : "Saison 2020 - Normal"},
-        ] 
-
-        this.challenges = [
-            {id : 1, nom : "Challenge 1", date_start : "2007-02-01", nb_joueur : 0},
-            {id : 2, nom : "Challenge 2", date_start : "2007-03-01", nb_joueur : 10},
-            {id : 3, nom : "Challenge 3", date_start : "2007-04-01", nb_joueur : 15},
-            {id : 4, nom : "Challenge 4", date_start : "2007-05-01", nb_joueur : 10},
-            {id : 5, nom : "Challenge 5", date_start : "2007-06-01", nb_joueur : 0},
-            {id : 6, nom : "Challenge 6", date_start : "2007-07-01", nb_joueur : 20},
-            {id : 7, nom : "Challenge 7", date_start : "2007-08-01", nb_joueur : 15},
-            {id : 8, nom : "Challenge 8", date_start : "2007-09-01", nb_joueur : 10},
-            {id : 9, nom : "Challenge 9", date_start : "2007-10-01", nb_joueur : 10}
-        ]       
+        
+        var that = this;
+        axios.get("http://127.0.0.1:5000/saison")
+            .then(function (response) {
+                let defaultSaison = that.$route.params.id_saison;
+                that.saisons = response.data;
+                that.currentSaison = (defaultSaison != undefined) ? parseInt(defaultSaison) : that.saisons[0].id;
+                that.changeSaison();
+            })
+            .catch(function (error) {   
+                console.log("erreur !"); 
+            });       
     },
 }
 </script>

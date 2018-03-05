@@ -171,34 +171,4 @@ export default {
 
 
 <style scoped lang="less">
-.form-group
-{
-    padding-top: 20px;
-
-    label
-    {
-        font-weight: bold;
-    }
-
-    input
-    {
-        border-radius: 0px;
-        border-left: 4px solid #d1d1d1;
-    }
-
-    &:first-child 
-    {
-        padding-top: 0px;
-    }
-
-    &.err input
-    {
-        border-left: 4px solid red;
-    }
-
-    &.valide input
-    {
-        border-left: 4px solid #449d44;
-    }
-}
 </style>

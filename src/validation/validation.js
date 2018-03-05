@@ -129,3 +129,31 @@ export var validationSaison = {
 		return formatReponse(test);
 	},
 }
+
+
+export var validationChallenge = {
+	date_start:function(a){
+		let test = approve.value(a, {
+			required: {
+				required: true,
+				message: "La date de début est requise"
+			}
+		});
+
+		return formatReponse(test);
+	},
+	nom:function(a){
+		let test = approve.value(a, {
+			required: {
+				required: true,
+				message: "Le nom de la saison est requis"
+			},
+			min: {
+				min:2,
+				message: 'Le nom de la saison est trop court'
+			}
+		});
+
+		return formatReponse(test);
+	},
+}

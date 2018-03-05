@@ -3,10 +3,16 @@
         <div class="container-page">
             <h1>{{label}}</h1>
             <div class="box">
+                <div class="form-group valide">
+                    <label>Saison :</label>
+                    <select v-model="saison" class="form-control" disabled>
+                        <option v-bind:value="saison">{{ this.nom_saison }}</option>
+                    </select>
+                </div>
                 <div class="form-group" v-bind:class="classInError(erreurs().nom.valide)">
                     <label>Nom du challenge :</label>
                     <input type="text" v-model="nom" class="form-control">
-                    <small class="form-text text-muted">{{erreurs().date_start.erreurs.join(" | ")}}</small>
+                    <small class="form-text text-muted">{{erreurs().nom.erreurs.join(" | ")}}</small>
                 </div>
                 <div class="form-group" v-bind:class="classInError(erreurs().date_start.valide)">
                     <label>Date du challenge :</label>
@@ -27,6 +33,8 @@ import { mapMutations } from 'vuex';
 import {validationSaison} from '../validation/validation';
 import axios from 'axios'
 import Datepicker from 'vuejs-datepicker';
+import moment from 'moment';
+
 
 export default {
     name: 'JoueurForm',
@@ -39,6 +47,8 @@ export default {
             id : 0,
             date_start : "",
             nom : "",
+            saison : 0,
+            nom_saison : ""
         }
     },
     methods : {
@@ -50,8 +60,9 @@ export default {
         ]),
         getAll: function() {
             return {
-                date_start : this.date_start,
-                nom : this.nom            
+                date_start : moment(this.date_start).format('YYYY-MM-DD'),
+                nom : this.nom,
+                saison : this.saison            
             }      
         },
         classInError: function(isValide) {
@@ -67,7 +78,7 @@ export default {
         },
         displayError(error) {
             if(error.request.status == 400) {
-                console.log(error.response.data);
+                this.setFlashError(["Erreur de données", true]);
             }
 
             if(error.request.status == 500) {
@@ -75,22 +86,32 @@ export default {
             }
 
             if(error.request.status == 404 || error.request.status == 0) {
+                console.log(error.response.data);
                 this.setFlashError(["Erreur service introuvable", true]);
             } 
         },
         displaySuccess(msg) {
             this.setFlashSuccess([msg, true])
-            this.$router.push({ name: 'JoueursList' });   
+            this.$router.push({ name: 'ChallengesBySaisonList', params:{id_saison : this.saison} });   
         },
         save: function() {
-            console.log(this.getAll());
-            /*if(this.mode == "post") {
+            if(this.mode == "post") {
                 this.post();
             }
 
-            if(this.mode == "put") {
+            /*if(this.mode == "put") {
                 this.put();
             }*/
+        },
+        getSaison : function(id) {
+            var that = this;
+            axios.get("http://127.0.0.1:5000/saison/" + id)
+                .then(function (response) {
+                    that.nom_saison = response.data.nom;
+                })
+                .catch(function (error) {
+                    that.displayError(error);          
+                });  
         },
         getById : function(id) {
             /*var that = this;
@@ -105,20 +126,20 @@ export default {
                 });*/  
         },
         put: function(data) {
-            var that = this;
+            /*var that = this;
             axios.put("http://127.0.0.1:5000/saison/" + this.id, this.getAll())
                 .then(function (response) {
                     that.displaySuccess("Saison éditée !");
                 })
                 .catch(function (error) {
                     that.displayError(error);          
-                });  
+                });*/  
         },
         post: function(data) {
             var that = this;
-            axios.post("http://127.0.0.1:5000/saison", this.getAll())
+            axios.post("http://127.0.0.1:5000/challenge", this.getAll())
                 .then(function (response) {
-                    that.displaySuccess("Saison créer !");
+                    that.displaySuccess("Challenge créer !");
                 })
                 .catch(function (error) {
                     that.displayError(error);          
@@ -126,8 +147,8 @@ export default {
         },
         erreurs : function() {
             return {
-                date_start    : validationSaison.date_start(this.date_start),
-                nom    : validationSaison.date_close(this.nom)
+                date_start  : validationSaison.date_start(this.date_start),
+                nom         : validationSaison.nom(this.nom)
             }
         },
         formErrors : function(){
@@ -147,13 +168,23 @@ export default {
         this.setCurrentSection("Challenge");
         this.clearFlashMessage();
 
-        if(this.$route.params.id == undefined) {
+        if(this.$route.params.id == undefined && this.$route.params.id_saison == undefined) {
+            this.setFlashError(["Erreur service introuvable", true]);
+            this.$router.push({ name: 'JoueursList' });
+        }
+
+
+        if(this.$route.params.id_saison != undefined) {
             this.mode = "post";
             this.label = "Créer un challenge";
             this.label_bt = "Créer";
-        } else {
+            this.saison = parseInt(this.$route.params.id_saison);
+            this.getSaison(this.saison);
+        }
+
+        if(this.$route.params.id != undefined) {
             this.mode = "put";
-            this.getById(this.$route.params.id);
+            //this.getById(this.$route.params.id);
             this.label = "Editer un challenge";
             this.label_bt = "Editer";
         }
@@ -164,34 +195,5 @@ export default {
 
 
 <style scoped lang="less">
-.form-group
-{
-    padding-top: 20px;
 
-    label
-    {
-        font-weight: bold;
-    }
-
-    input
-    {
-        border-radius: 0px;
-        border-left: 4px solid #d1d1d1;
-    }
-
-    &:first-child 
-    {
-        padding-top: 0px;
-    }
-
-    &.err input
-    {
-        border-left: 4px solid red;
-    }
-
-    &.valide input
-    {
-        border-left: 4px solid #449d44;
-    }
-}
 </style>
